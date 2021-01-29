@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "fabrichomes",
+  "version": "${version}",
+  "name": "FabricHomes",
+  "description": "FabricHomes is a small, server-side Fabric mod that adds /home command and its counterparts",
+  "authors": [
+    "CodedSakura"
+  ],
+  "contact": {
+    "website": "http://mods.codedsakura.eu",
+    "homepage": "http://codedsakura.eu",
+    "sources": "https://github.com/CodedSakura/FabricWarps",
+    "repo": "https://github.com/CodedSakura/FabricWarps",
+    "issues": "https://github.com/CodedSakura/FabricWarps/issues"
+  },
+  "license": "ISC",
+  "icon": "assets/FabricHomes/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      "eu.codedsakura.fabrichomes.FabricHomes"
+    ],
+    "cardinal-components-entity": [
+      "eu.codedsakura.fabrichomes.components.PlayerComponentInitializer"
+    ]
+  },
+  "custom": {
+    "cardinal-components": ["fabrichomes:homes"]
+  },
+  "depends": {
+    "fabricloader": ">=0.10.6",
+    "fabric": "*",
+    "minecraft": "^1.16.2"
+  }
+}
