@@ -14,7 +14,7 @@ public class HomeDataComponent implements IHomeDataComponent {
     @Override
     public void readFromNbt(CompoundTag tag) {
         homes.clear();
-        tag.getList("homes", NbtType.COMPOUND).forEach(v -> homes.add((HomeComponent) v));
+        tag.getList("homes", NbtType.COMPOUND).forEach(v -> homes.add(HomeComponent.readFromNbt((CompoundTag) v)));
         maxHomes = tag.getInt("maxHomes");
     }
 

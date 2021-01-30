@@ -1,13 +1,11 @@
 package eu.codedsakura.fabrichomes.components;
 
-import dev.onyxstudios.cca.api.v3.component.ComponentV3;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
-public interface INamedDirectionalPointComponent extends ComponentV3 {
+public interface INamedDirectionalPointComponent {
     double getX();
     double getY();
     double geyZ();

@@ -37,18 +37,18 @@ public class HomeComponent implements INamedDirectionalPointComponent {
         this.dim = dim;
     }
 
-    @Override
-    public void readFromNbt(CompoundTag tag) {
-        x = tag.getDouble("x");
-        y = tag.getDouble("y");
-        z = tag.getDouble("z");
-        pitch = tag.getFloat("pitch");
-        yaw = tag.getFloat("yaw");
-        name = tag.getString("name");
-        dim = Identifier.tryParse(tag.getString("dim"));
+    public static HomeComponent readFromNbt(CompoundTag tag) {
+        return new HomeComponent(
+            tag.getDouble("x"),
+            tag.getDouble("y"),
+            tag.getDouble("z"),
+            tag.getFloat("pitch"),
+            tag.getFloat("yaw"),
+            Identifier.tryParse(tag.getString("dim")),
+            tag.getString("name")
+        );
     }
 
-    @Override
     public void writeToNbt(CompoundTag tag) {
         tag.putDouble("x", x);
         tag.putDouble("y", y);

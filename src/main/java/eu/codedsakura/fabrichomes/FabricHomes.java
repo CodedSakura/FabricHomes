@@ -68,6 +68,10 @@ public class FabricHomes implements ModInitializer {
                     .then(argument("name", StringArgumentType.greedyString())
                             .executes(ctx -> homeSet(ctx, StringArgumentType.getString(ctx, "name")))));
 
+            dispatcher.register(literal("delhome")
+                            .then(argument("name", StringArgumentType.greedyString()).suggests(this::getHomeSuggestions)
+                                    .executes(ctx -> homeDel(ctx, StringArgumentType.getString(ctx, "name")))));
+
             dispatcher.register(literal("homes")
                     .executes(this::homeList)
                     .then(literal("list")
