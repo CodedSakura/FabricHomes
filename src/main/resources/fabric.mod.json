@@ -10,9 +10,9 @@
   "contact": {
     "website": "http://mods.codedsakura.eu",
     "homepage": "http://codedsakura.eu",
-    "sources": "https://github.com/CodedSakura/FabricWarps",
-    "repo": "https://github.com/CodedSakura/FabricWarps",
-    "issues": "https://github.com/CodedSakura/FabricWarps/issues"
+    "sources": "https://github.com/CodedSakura/FabricHomes",
+    "repo": "https://github.com/CodedSakura/FabricHomes",
+    "issues": "https://github.com/CodedSakura/FabricHomes/issues"
   },
   "license": "ISC",
   "icon": "assets/FabricHomes/icon.png",

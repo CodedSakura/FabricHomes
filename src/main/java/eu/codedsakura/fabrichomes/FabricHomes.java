@@ -127,7 +127,7 @@ public class FabricHomes implements ModInitializer {
             player.teleport(
                     ctx.getSource().getMinecraftServer().getWorld(RegistryKey.of(Registry.DIMENSION, home.get().getDimID())),
                     home.get().getX(), home.get().getY(), home.get().geyZ(),
-                    home.get().getPitch(), home.get().getYaw());
+                    home.get().getYaw(), home.get().getPitch());
             recentRequests.put(player.getUuid(), Instant.now().getEpochSecond());
         });
 
