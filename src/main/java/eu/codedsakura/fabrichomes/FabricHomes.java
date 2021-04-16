@@ -15,6 +15,7 @@ import eu.codedsakura.mods.TextUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.SharedConstants;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -28,7 +29,6 @@ import org.apache.logging.log4j.Logger;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import static eu.codedsakura.fabrichomes.components.PlayerComponentInitializer.HOME_DATA;
 import static net.minecraft.server.command.CommandManager.argument;
@@ -41,6 +41,15 @@ public class FabricHomes implements ModInitializer {
 
     private final HashMap<UUID, Long> recentRequests = new HashMap<>();
     private ConfigUtils config;
+
+    public static final boolean pre21w08a = determineVersion();
+
+    private static boolean determineVersion() {
+        String version = SharedConstants.getGameVersion().getName();
+        return (version.startsWith("21w0") && !(version.endsWith("8a") || version.endsWith("8b"))) ||
+                (version.startsWith("20w")) ||
+                (version.startsWith("1.16"));
+    }
 
     @Override
     public void onInitialize() {
@@ -83,7 +92,7 @@ public class FabricHomes implements ModInitializer {
                     .then(literal("delete")
                             .then(argument("name", StringArgumentType.greedyString()).suggests(this::getHomeSuggestions)
                                     .executes(ctx -> homeDel(ctx, StringArgumentType.getString(ctx, "name")))))
-                    .then(config.generateCommand("config", 2)));
+                    .then(config.generateCommand("config", source -> source.hasPermissionLevel(2))));
         });
     }
 

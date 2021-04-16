@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.*;
 import java.util.List;
 import java.util.Properties;
+import java.util.function.Predicate;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -62,9 +63,9 @@ public class ConfigUtils {
         }
     }
 
-    public LiteralArgumentBuilder<ServerCommandSource> generateCommand(String commandName, int permissionLevel) {
+    public LiteralArgumentBuilder<ServerCommandSource> generateCommand(String commandName, Predicate<ServerCommandSource> requirement) {
         LiteralArgumentBuilder<ServerCommandSource> out =
-                literal(commandName).requires(source -> source.hasPermissionLevel(permissionLevel))
+                literal(commandName).requires(requirement)
                         .executes(ctx -> {
                             values.stream().filter(v -> v.command != null).forEach(value ->
                                     ctx.getSource().sendFeedback(new TranslatableText(value.command.getterText, value.value), false));
@@ -106,19 +107,18 @@ public class ConfigUtils {
             this.suggestions = suggestions;
         }
 
-        abstract T getFromProps(Properties props);
-        void setToProps(Properties props) {
+        public abstract T getFromProps(Properties props);
+        public void setToProps(Properties props) {
             props.setProperty(name, String.valueOf(value));
             if (comment != null) props.setProperty(name + ".comment", comment);
         }
-        abstract ArgumentType<T> getArgumentType();
-        abstract T parseArgumentValue(CommandContext<ServerCommandSource> ctx);
+        public abstract ArgumentType<?> getArgumentType();
+        public abstract T parseArgumentValue(CommandContext<ServerCommandSource> ctx);
     }
 
     public static class IntegerConfigValue extends IConfigValue<Integer> {
         protected final int defaultValue;
         private final IntLimits limits;
-        protected int value;
 
         public IntegerConfigValue(@NotNull String name, Integer defaultValue, IntLimits limits, @Nullable String comment, @Nullable Command command, SuggestionProvider<Integer> suggestions) {
             super(name, defaultValue, comment, command, suggestions);
@@ -138,11 +138,11 @@ public class ConfigUtils {
         }
 
         @Override
-        ArgumentType<Integer> getArgumentType() {
+        public ArgumentType<Integer> getArgumentType() {
             return IntegerArgumentType.integer(limits.min, limits.max);
         }
         @Override
-        Integer parseArgumentValue(CommandContext<ServerCommandSource> ctx) {
+        public Integer parseArgumentValue(CommandContext<ServerCommandSource> ctx) {
             return IntegerArgumentType.getInteger(ctx, name);
         }
 
@@ -161,7 +161,6 @@ public class ConfigUtils {
 
     public static class BooleanConfigValue extends IConfigValue<Boolean> {
         protected final boolean defaultValue;
-        protected boolean value;
 
         public BooleanConfigValue(@NotNull String name, boolean defaultValue, @Nullable String comment, @Nullable Command command, @Nullable SuggestionProvider<Boolean> suggestions) {
             super(name, defaultValue, comment, command, suggestions);
@@ -172,17 +171,17 @@ public class ConfigUtils {
         }
 
         @Override
-        Boolean getFromProps(Properties props) {
+        public Boolean getFromProps(Properties props) {
             return Boolean.parseBoolean(props.getProperty(name));
         }
 
         @Override
-        ArgumentType<Boolean> getArgumentType() {
+        public ArgumentType<Boolean> getArgumentType() {
             return BoolArgumentType.bool();
         }
 
         @Override
-        Boolean parseArgumentValue(CommandContext<ServerCommandSource> ctx) {
+        public Boolean parseArgumentValue(CommandContext<ServerCommandSource> ctx) {
             return BoolArgumentType.getBool(ctx, name);
         }
     }
