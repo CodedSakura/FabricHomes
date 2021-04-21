@@ -1,7 +1,8 @@
 # FabricHomes
 [![CurseForge downloads](http://cf.way2muchnoise.eu/short_441291.svg)](https://www.curseforge.com/minecraft/mc-mods/fabrichomes)
-[![GitHub release version](https://img.shields.io/github/v/release/CodedSakura/FabricHomes)](https://github.com/CodedSakura/FabricHomes)  
-A server-side Fabric mod that adds /home command-set.  
+[![GitHub release version](https://img.shields.io/github/v/release/CodedSakura/FabricHomes)](https://github.com/CodedSakura/FabricHomes)
+[![Discord server](https://img.shields.io/discord/805088174085767219)](https://discord.gg/BkKG6nx6rG)  
+A server-side Fabric/Quilt mod that adds /home command-set.  
 Works for Minecraft 1.16.2+ (snapshots not fully tested)  
 Requires [FabricAPI](https://www.curseforge.com/minecraft/mc-mods/fabric-api)  
 
