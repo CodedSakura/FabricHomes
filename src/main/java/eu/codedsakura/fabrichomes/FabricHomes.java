@@ -1,11 +1,8 @@
 package eu.codedsakura.fabrichomes;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import eu.codedsakura.fabrichomes.components.HomeComponent;
@@ -15,7 +12,6 @@ import eu.codedsakura.mods.TextUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.SharedConstants;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -38,18 +34,8 @@ public class FabricHomes implements ModInitializer {
     public static final Logger logger = LogManager.getLogger("FabricHomes");
     private static final String CONFIG_NAME = "FabricHomes.properties";
 
-
     private final HashMap<UUID, Long> recentRequests = new HashMap<>();
     private ConfigUtils config;
-
-    public static final boolean pre21w08a = determineVersion();
-
-    private static boolean determineVersion() {
-        String version = SharedConstants.getGameVersion().getName();
-        return (version.startsWith("21w0") && !(version.endsWith("8a") || version.endsWith("8b"))) ||
-                (version.startsWith("20w")) ||
-                (version.startsWith("1.16"));
-    }
 
     @Override
     public void onInitialize() {

@@ -9,12 +9,9 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
-import us.spaceclouds.fabrictpafixtitles.FabricTPAFixTitles;
 
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static eu.codedsakura.fabrichomes.FabricHomes.pre21w08a;
 
 public class TeleportUtils {
     public static void genericTeleport(boolean bossBar, double standStillTime, ServerPlayerEntity who, Runnable onCounterDone) {
@@ -23,15 +20,11 @@ public class TeleportUtils {
         final Vec3d[] lastPos = {who.getPos()};
         CommandBossBar standStillBar = null;
         if (bossBar) {
-            standStillBar = server.getBossBarManager().add(new Identifier("standstill"), LiteralText.EMPTY);
+            standStillBar = server.getBossBarManager().add(new Identifier("standstill-" + who.getUuidAsString()), LiteralText.EMPTY);
             standStillBar.addPlayer(who);
             standStillBar.setColor(BossBar.Color.PINK);
         }
-        if (pre21w08a) {
-            who.networkHandler.sendPacket(new TitleS2CPacket(0, 10, 5));
-        } else {
-            FabricTPAFixTitles.setFade(who, 0, 10, 5);
-        }
+        who.networkHandler.sendPacket(new TitleS2CPacket(0, 10, 5));
         CommandBossBar finalStandStillBar = standStillBar;
 
         final ServerPlayerEntity[] whoFinal = {who};
@@ -49,11 +42,7 @@ public class TeleportUtils {
                     new Timer().schedule(new TimerTask() {
                         @Override
                         public void run() {
-                            if (pre21w08a) {
-                                whoFinal[0].networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.RESET, null));
-                            } else {
-                                FabricTPAFixTitles.clearTitle(whoFinal[0]);
-                            }
+                            whoFinal[0].networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.RESET, null));
                         }
                     }, 500);
                     timer.cancel();
@@ -79,15 +68,10 @@ public class TeleportUtils {
                             .append(new LiteralText(Integer.toString((int) Math.floor(counter[0] + 1))).formatted(Formatting.GOLD))
                             .append(new LiteralText(" more seconds!").formatted(Formatting.LIGHT_PURPLE)), true);
                 }
-                if (pre21w08a) {
-                    whoFinal[0].networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.SUBTITLE,
-                            new LiteralText("Please stand still...").formatted(Formatting.RED, Formatting.ITALIC)));
-                    whoFinal[0].networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.TITLE,
-                            new LiteralText("Teleporting!").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD)));
-                } else {
-                    FabricTPAFixTitles.setSubTitle(whoFinal[0], new LiteralText("Please stand still...").formatted(Formatting.RED, Formatting.ITALIC));
-                    FabricTPAFixTitles.setTitle(whoFinal[0], new LiteralText("Teleporting!").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD));
-                }
+                whoFinal[0].networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.SUBTITLE,
+                        new LiteralText("Please stand still...").formatted(Formatting.RED, Formatting.ITALIC)));
+                whoFinal[0].networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.TITLE,
+                        new LiteralText("Teleporting!").formatted(Formatting.LIGHT_PURPLE, Formatting.BOLD)));
             }
         }, 0, 250);
     }

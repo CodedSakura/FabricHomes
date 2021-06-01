@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.6-SNAPSHOT'
+    id 'fabric-loom' version '0.8-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -14,9 +14,6 @@ repositories {
     maven {
         name = "Ladysnake Mods"
         url = 'https://ladysnake.jfrog.io/artifactory/mods'
-    }
-    maven {
-        url = "https://mymavenrepo.com/repo/4ORcMjxPdDAGU4bCTMnc/"
     }
 }
 
@@ -38,20 +35,13 @@ dependencies {
     // CCA jar-in-jar
     include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cca_version}"
     include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cca_version}"
-
-    modImplementation(include("us.spaceclouds:FabricTPAFixTitles:0.1.2"))
 }
 
 processResources {
     inputs.property "version", project.version
 
-    from(sourceSets.main.resources.srcDirs) {
-        include "fabric.mod.json"
+    filesMatching("fabric.mod.json") {
         expand "version": project.version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "fabric.mod.json"
     }
 }
 

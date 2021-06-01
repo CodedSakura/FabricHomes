@@ -16,7 +16,7 @@
   },
   "license": "ISC",
   "icon": "assets/FabricHomes/icon.png",
-  "environment": "server",
+  "environment": "*",
   "entrypoints": {
     "main": [
       "eu.codedsakura.fabrichomes.FabricHomes"
@@ -31,6 +31,6 @@
   "depends": {
     "fabricloader": ">=0.10.6",
     "fabric": "*",
-    "minecraft": "^1.16.2"
+    "minecraft": "~1.16.2"
   }
 }
