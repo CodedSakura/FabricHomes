@@ -1,9 +1,7 @@
 package eu.codedsakura.fabrichomes.components;
 
-import eu.codedsakura.mods.TextUtils;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
@@ -37,7 +35,7 @@ public class HomeComponent implements INamedDirectionalPointComponent {
         this.dim = dim;
     }
 
-    public static HomeComponent readFromNbt(CompoundTag tag) {
+    public static HomeComponent readFromNbt(NbtCompound tag) {
         return new HomeComponent(
             tag.getDouble("x"),
             tag.getDouble("y"),
@@ -49,7 +47,7 @@ public class HomeComponent implements INamedDirectionalPointComponent {
         );
     }
 
-    public void writeToNbt(CompoundTag tag) {
+    public void writeToNbt(NbtCompound tag) {
         tag.putDouble("x", x);
         tag.putDouble("y", y);
         tag.putDouble("z", z);

@@ -120,7 +120,7 @@ public class FabricHomes implements ModInitializer {
 
         TeleportUtils.genericTeleport((boolean) config.getValue("bossbar"), (int) config.getValue("stand-still"), player, () -> {
             player.teleport(
-                    ctx.getSource().getMinecraftServer().getWorld(RegistryKey.of(Registry.DIMENSION, home.get().getDimID())),
+                    ctx.getSource().getMinecraftServer().getWorld(RegistryKey.of(Registry.WORLD_KEY, home.get().getDimID())),
                     home.get().getX(), home.get().getY(), home.get().geyZ(),
                     home.get().getYaw(), home.get().getPitch());
             recentRequests.put(player.getUuid(), Instant.now().getEpochSecond());
@@ -139,8 +139,8 @@ public class FabricHomes implements ModInitializer {
 
         if (HOME_DATA.get(ctx.getSource().getPlayer()).addHome(new HomeComponent(
                 ctx.getSource().getPosition(),
-                ctx.getSource().getPlayer().pitch,
-                ctx.getSource().getPlayer().yaw,
+                ctx.getSource().getPlayer().getPitch(),
+                ctx.getSource().getPlayer().getYaw(),
                 ctx.getSource().getWorld().getRegistryKey().getValue(),
                 name))) {
 
