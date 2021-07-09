@@ -8,7 +8,7 @@ import net.minecraft.util.math.Vec3d;
 public interface INamedDirectionalPointComponent {
     double getX();
     double getY();
-    double geyZ();
+    double getZ();
     float getPitch();
     float getYaw();
     String getName();

@@ -121,7 +121,7 @@ public class FabricHomes implements ModInitializer {
         TeleportUtils.genericTeleport((boolean) config.getValue("bossbar"), (int) config.getValue("stand-still"), player, () -> {
             player.teleport(
                     ctx.getSource().getMinecraftServer().getWorld(RegistryKey.of(Registry.WORLD_KEY, home.get().getDimID())),
-                    home.get().getX(), home.get().getY(), home.get().geyZ(),
+                    home.get().getX(), home.get().getY(), home.get().getZ(),
                     home.get().getYaw(), home.get().getPitch());
             recentRequests.put(player.getUuid(), Instant.now().getEpochSecond());
         });

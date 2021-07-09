@@ -59,7 +59,7 @@ public class HomeComponent implements INamedDirectionalPointComponent {
 
     @Override public double getX()  { return x; }
     @Override public double getY()  { return y; }
-    @Override public double geyZ()  { return z; }
+    @Override public double getZ()  { return z; }
     @Override public float getPitch()  { return pitch; }
     @Override public float getYaw()    { return yaw;   }
     @Override public String getName()   { return name;  }
