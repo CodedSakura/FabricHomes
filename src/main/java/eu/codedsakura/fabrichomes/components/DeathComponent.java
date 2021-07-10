@@ -9,41 +9,41 @@ import net.minecraft.util.math.Vec3d;
 
 import static eu.codedsakura.mods.TextUtils.valueRepr;
 
-public class HomeComponent implements INamedDirectionalPointComponent {
+public class DeathComponent implements IDirectionalPointComponent {
     private double x, y, z;
     private float pitch, yaw;
-    private String name;
     private Identifier dim;
+    private String damageSource;
 
-    public HomeComponent(double x, double y, double z, float pitch, float yaw, Identifier dim, String name) {
+    public DeathComponent(double x, double y, double z, float pitch, float yaw, Identifier dim, String damageSource) {
         this.x = x;
         this.y = y;
         this.z = z;
         this.pitch = pitch;
         this.yaw = yaw;
-        this.name = name;
         this.dim = dim;
+        this.damageSource = damageSource;
     }
 
-    public HomeComponent(Vec3d pos, float pitch, float yaw, Identifier dim, String name) {
+    public DeathComponent(Vec3d pos, float pitch, float yaw, Identifier dim, String damageSource) {
         this.x = pos.x;
         this.y = pos.y;
         this.z = pos.z;
         this.pitch = pitch;
         this.yaw = yaw;
-        this.name = name;
         this.dim = dim;
+        this.damageSource = damageSource;
     }
 
-    public static HomeComponent readFromNbt(NbtCompound tag) {
-        return new HomeComponent(
+    public static DeathComponent readFromNbt(NbtCompound tag) {
+        return new DeathComponent(
             tag.getDouble("x"),
             tag.getDouble("y"),
             tag.getDouble("z"),
             tag.getFloat("pitch"),
             tag.getFloat("yaw"),
             Identifier.tryParse(tag.getString("dim")),
-            tag.getString("name")
+            tag.getString("source")
         );
     }
 
@@ -53,8 +53,8 @@ public class HomeComponent implements INamedDirectionalPointComponent {
         tag.putDouble("z", z);
         tag.putFloat("pitch", pitch);
         tag.putFloat("yaw", yaw);
-        tag.putString("name", name);
         tag.putString("dim", dim.toString());
+        tag.putString("source", damageSource);
     }
 
     @Override public double getX()  { return x; }
@@ -62,16 +62,15 @@ public class HomeComponent implements INamedDirectionalPointComponent {
     @Override public double getZ()  { return z; }
     @Override public float getPitch()  { return pitch; }
     @Override public float getYaw()    { return yaw;   }
-    @Override public String getName()   { return name;  }
     @Override public Vec3d getCoords()  { return new Vec3d(x, y, z); }
     @Override public Identifier getDimID() { return dim; }
 
     @Override
     public MutableText toText(MinecraftServer server) {
-        return new TranslatableText("%s\n%s; %s; %s\n%s; %s\n%s",
-                valueRepr("Name", name),
+        return new TranslatableText("%s; %s; %s\n%s; %s\n%s\n%s",
                 valueRepr("X", x), valueRepr("Y", y), valueRepr("Z", z),
                 valueRepr("Yaw", yaw), valueRepr("Pitch", pitch),
-                valueRepr("In", dim.toString()));
+                valueRepr("In", dim.toString()),
+                valueRepr("Cause", damageSource));
     }
 }

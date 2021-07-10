@@ -5,14 +5,17 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import eu.codedsakura.fabrichomes.components.DeathComponent;
 import eu.codedsakura.fabrichomes.components.HomeComponent;
 import eu.codedsakura.mods.ConfigUtils;
 import eu.codedsakura.mods.TeleportUtils;
 import eu.codedsakura.mods.TextUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.*;
@@ -26,6 +29,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
+import static eu.codedsakura.fabrichomes.components.PlayerComponentInitializer.DEATH_DATA;
 import static eu.codedsakura.fabrichomes.components.PlayerComponentInitializer.HOME_DATA;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -79,7 +83,18 @@ public class FabricHomes implements ModInitializer {
                             .then(argument("name", StringArgumentType.greedyString()).suggests(this::getHomeSuggestions)
                                     .executes(ctx -> homeDel(ctx, StringArgumentType.getString(ctx, "name")))))
                     .then(config.generateCommand("config", source -> source.hasPermissionLevel(2))));
+
+            // lastdeath command added by PurpleCho
+            // can teleport on /lastdeath
+            //or view death coords with /lastdeath info
+            dispatcher.register(literal("lastdeath")
+                    .executes(this::deathInit)
+                    .then(literal("info")
+                        .executes(this::deathInfo)));
         });
+
+        //When a player dies, store the coords and cause in their NBT data
+        ServerPlayerEvents.ALLOW_DEATH.register(((player, damageSource, damageAmount) -> deathStore(player, damageSource)));
     }
 
     private boolean checkCooldown(ServerPlayerEntity tFrom) {
@@ -121,7 +136,7 @@ public class FabricHomes implements ModInitializer {
         TeleportUtils.genericTeleport((boolean) config.getValue("bossbar"), (int) config.getValue("stand-still"), player, () -> {
             player.teleport(
                     ctx.getSource().getMinecraftServer().getWorld(RegistryKey.of(Registry.WORLD_KEY, home.get().getDimID())),
-                    home.get().getX(), home.get().getY(), home.get().geyZ(),
+                    home.get().getX(), home.get().getY(), home.get().getZ(),
                     home.get().getYaw(), home.get().getPitch());
             recentRequests.put(player.getUuid(), Instant.now().getEpochSecond());
         });
@@ -197,6 +212,42 @@ public class FabricHomes implements ModInitializer {
                                                 .append(h.toText(ctx.getSource().getMinecraftServer()))))
                                 .withColor(Formatting.GOLD))));
         ctx.getSource().sendFeedback(new TranslatableText("%s/%s:\n", homes.size(), config.getValue("max-homes")).append(TextUtils.join(list, new LiteralText(", "))), false);
+        return 1;
+    }
+
+boolean deathStore(ServerPlayerEntity player, DamageSource damageSource) {
+        //Only store coords if they died from something other than falling into the void
+        if(damageSource == DamageSource.OUT_OF_WORLD) { return true; }
+
+        DeathComponent death = new DeathComponent(
+                player.getPos(),
+                player.getPitch(),
+                player.getYaw(),
+                player.getServerWorld().getRegistryKey().getValue(),
+                damageSource.getName());
+        DEATH_DATA.get(player).setDeath(death);
+        return true;
+    }
+
+    int deathInfo(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+        ctx.getSource().sendFeedback(DEATH_DATA.get(ctx.getSource().getPlayer()).getDeath().toText(ctx.getSource().getMinecraftServer()), false);
+        return 1;
+    }
+
+    int deathInit(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+        ServerPlayerEntity player = ctx.getSource().getPlayer();
+        DeathComponent death = DEATH_DATA.get(player).getDeath();
+
+        if (checkCooldown(player)) return 1;
+
+        TeleportUtils.genericTeleport((boolean) config.getValue("bossbar"), (int) config.getValue("stand-still"), player, () -> {
+            player.teleport(
+                    ctx.getSource().getMinecraftServer().getWorld(RegistryKey.of(Registry.WORLD_KEY, death.getDimID())),
+                    death.getX(), death.getY(), death.getZ(),
+                    death.getYaw(), death.getPitch());
+            recentRequests.put(player.getUuid(), Instant.now().getEpochSecond());
+        });
+
         return 1;
     }
 }

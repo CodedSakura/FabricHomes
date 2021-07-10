@@ -26,7 +26,9 @@
     ]
   },
   "custom": {
-    "cardinal-components": ["fabrichomes:homes"]
+    "cardinal-components": [
+      "fabrichomes:homes",
+      "fabrichomes:death"]
   },
   "depends": {
     "fabricloader": ">=0.10.6",
