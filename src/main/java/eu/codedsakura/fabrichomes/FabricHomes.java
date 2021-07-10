@@ -216,6 +216,9 @@ public class FabricHomes implements ModInitializer {
     }
 
 boolean deathStore(ServerPlayerEntity player, DamageSource damageSource) {
+        //Only store coords if they died from something other than falling into the void
+        if(damageSource == DamageSource.OUT_OF_WORLD) { return true; }
+
         DeathComponent death = new DeathComponent(
                 player.getPos(),
                 player.getPitch(),
