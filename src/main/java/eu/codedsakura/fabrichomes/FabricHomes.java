@@ -111,7 +111,7 @@ public class FabricHomes implements ModInitializer {
         Optional<HomeComponent> home = HOME_DATA.get(player).getHomes()
                 .stream().filter(v -> v.getName().equals(finalName)).findFirst();
 
-        if (!home.isPresent()) {
+        if (home.isEmpty()) {
             ctx.getSource().sendFeedback(new LiteralText("This home does not exist").formatted(Formatting.RED), false);
             return 0;
         }
@@ -120,7 +120,7 @@ public class FabricHomes implements ModInitializer {
 
         TeleportUtils.genericTeleport((boolean) config.getValue("bossbar"), (int) config.getValue("stand-still"), player, () -> {
             player.teleport(
-                    ctx.getSource().getMinecraftServer().getWorld(RegistryKey.of(Registry.WORLD_KEY, home.get().getDimID())),
+                    ctx.getSource().getServer().getWorld(RegistryKey.of(Registry.WORLD_KEY, home.get().getDimID())),
                     home.get().getX(), home.get().getY(), home.get().geyZ(),
                     home.get().getYaw(), home.get().getPitch());
             recentRequests.put(player.getUuid(), Instant.now().getEpochSecond());
@@ -148,13 +148,13 @@ public class FabricHomes implements ModInitializer {
             Optional<HomeComponent> home = HOME_DATA.get(ctx.getSource().getPlayer()).getHomes()
                     .stream().filter(v -> v.getName().equals(finalName)).findFirst();
 
-            if (!home.isPresent()) {
+            if (home.isEmpty()) {
                 ctx.getSource().sendFeedback(new LiteralText("Something went wrong adding the home!").formatted(Formatting.RED), true);
                 return 1;
             }
 
             ctx.getSource().sendFeedback(new TranslatableText("Home %s added successfully!",
-                    new LiteralText(name).styled(s -> s.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, home.get().toText(ctx.getSource().getMinecraftServer())))
+                    new LiteralText(name).styled(s -> s.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, home.get().toText(ctx.getSource().getServer())))
                             .withColor(Formatting.GOLD))).formatted(Formatting.LIGHT_PURPLE), false);
         } else {
             ctx.getSource().sendFeedback(new LiteralText("Couldn't add the home (probably already exists)!").formatted(Formatting.RED), false);
@@ -194,7 +194,7 @@ public class FabricHomes implements ModInitializer {
                         s.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/home " + h.getName()))
                                 .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                         LiteralText.EMPTY.copy().append(new LiteralText("Click to teleport.\n").formatted(Formatting.ITALIC))
-                                                .append(h.toText(ctx.getSource().getMinecraftServer()))))
+                                                .append(h.toText(ctx.getSource().getServer()))))
                                 .withColor(Formatting.GOLD))));
         ctx.getSource().sendFeedback(new TranslatableText("%s/%s:\n", homes.size(), config.getValue("max-homes")).append(TextUtils.join(list, new LiteralText(", "))), false);
         return 1;
