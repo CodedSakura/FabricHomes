@@ -6,17 +6,33 @@ A server-side Fabric/Quilt mod that adds /home command-set.
 Works for Minecraft 1.16.2+ (snapshots not fully tested)  
 Requires [FabricAPI](https://www.curseforge.com/minecraft/mc-mods/fabric-api)  
 
-## Commands
-`/home [<name>]` - Teleports you to the specified home (defaults to "main")  
-`/sethome [<name>]` - Sets a new home with the specified name (defaults to "main")  
+## Commands & Permissions
+- `/home [<name>]` - Teleports you to the specified home (defaults to "main")  
+Permission: `fabrichomes.home` | Default: `True`
 
-`/homes` - Alias for `/homes list`  
+
+- `/sethome [<name>]` - Sets a new home with the specified name (defaults to "main")  
+Permission: `fabrichomes.sethome` | Default: `True`
+
+
+- `/homes` - Alias for `/homes list`  
 `/homes list` - Lists all homes  
-`/homes delete` - Removes the specified home  
+Permission: `fabrichomes.homes.list` | Default: `True`
 
-### OP level 2 permissions
-`/homes list <player>` - Lists homes available to that player  
-`/homes config [<name> [<value>]]` - sets or gets a config value  
+
+- `/homes delete` - Removes the specified home  
+Permission: `fabrichomes.homes.delete` | Default: `True`
+
+
+- `/homes list <player>` - Lists homes available to that player  
+Permission: `fabrichomes.homes.list_player` | Default: `Level 2`
+
+
+- `/homes config [<name> [<value>]]` - sets or gets a config value  
+Permission: `fabrichomes.config` | Default: `Level 2`
+
+
+Permission `fabrichomes.homes` grant access to all `/homes` subcommands.
 
 ## Configuration
 
