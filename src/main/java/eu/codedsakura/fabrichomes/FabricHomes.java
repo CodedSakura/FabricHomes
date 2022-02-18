@@ -9,7 +9,7 @@ import eu.codedsakura.fabrichomes.components.HomeComponent;
 import eu.codedsakura.mods.ConfigUtils;
 import eu.codedsakura.mods.TeleportUtils;
 import eu.codedsakura.mods.TextUtils;
-import me.lucko.fabric.api.permissions.v0.Permissions;
+import eu.codedsakura.mods.fpapiutils.FPAPIUtilsWrapper;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
@@ -55,38 +55,38 @@ public class FabricHomes implements ModInitializer {
 
         CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
             dispatcher.register(literal("home")
-                    .requires(Permissions.require("fabrichomes.home", true))
+                    .requires(FPAPIUtilsWrapper.require("fabrichomes.home", true))
                     .executes(ctx -> homeInit(ctx, null))
                     .then(argument("name", StringArgumentType.greedyString()).suggests(this::getHomeSuggestions)
                             .executes(ctx -> homeInit(ctx, StringArgumentType.getString(ctx, "name")))));
 
             dispatcher.register(literal("sethome")
-                    .requires(Permissions.require("fabrichomes.sethome", true))
+                    .requires(FPAPIUtilsWrapper.require("fabrichomes.sethome", true))
                     .executes(ctx -> homeSet(ctx, null))
                     .then(argument("name", StringArgumentType.greedyString())
                             .executes(ctx -> homeSet(ctx, StringArgumentType.getString(ctx, "name")))));
 
             dispatcher.register(literal("delhome")
-                            .requires(Permissions.require("fabrichomes.delhome", true))
+                            .requires(FPAPIUtilsWrapper.require("fabrichomes.delhome", true))
                             .then(argument("name", StringArgumentType.greedyString()).suggests(this::getHomeSuggestions)
                                     .executes(ctx -> homeDel(ctx, StringArgumentType.getString(ctx, "name")))));
 
             dispatcher.register(literal("homes")
                     .executes(this::homeList)
                     .then(literal("list")
-                            .requires(Permissions.require("fabrichomes.homes.list", true))
+                            .requires(FPAPIUtilsWrapper.require("fabrichomes.homes.list", true))
                             .executes(this::homeList)
                             .then(argument("player", EntityArgumentType.player())
-                                    .requires(Permissions.require("fabrichomes.homes.list_player", 2))
+                                    .requires(FPAPIUtilsWrapper.require("fabrichomes.homes.list_player", 2))
                                     .executes(ctx -> homeList(ctx, EntityArgumentType.getPlayer(ctx, "player")))))
                     .then(literal("gui").requires(req -> false)
-                            .requires(Permissions.require("fabrichomes.homes.gui", true))
+                            .requires(FPAPIUtilsWrapper.require("fabrichomes.homes.gui", true))
                             .executes(ctx -> 0)) // TODO
                     .then(literal("delete")
-                            .requires(Permissions.require("fabrichomes.homes.delete", true))
+                            .requires(FPAPIUtilsWrapper.require("fabrichomes.homes.delete", true))
                             .then(argument("name", StringArgumentType.greedyString()).suggests(this::getHomeSuggestions)
                                     .executes(ctx -> homeDel(ctx, StringArgumentType.getString(ctx, "name")))))
-                    .then(config.generateCommand("config", Permissions.require("fabrichomes.confg", 2))));
+                    .then(config.generateCommand("config", FPAPIUtilsWrapper.require("fabrichomes.confg", 2))));
         });
     }
 
@@ -192,7 +192,7 @@ public class FabricHomes implements ModInitializer {
 
 
     int homeList(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
-        if(!Permissions.check(ctx.getSource(), "fabrichomes.homes.list", true)) {
+        if(!FPAPIUtilsWrapper.check(ctx.getSource(), "fabrichomes.homes.list", true)) {
             return 0;
         }
         return homeList(ctx, ctx.getSource().getPlayer());
