@@ -3,7 +3,7 @@ package eu.codedsakura.fabrichomes.components;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 
@@ -68,7 +68,7 @@ public class HomeComponent implements INamedDirectionalPointComponent {
 
     @Override
     public MutableText toText(MinecraftServer server) {
-        return new TranslatableText("%s\n%s; %s; %s\n%s; %s\n%s",
+        return Text.translatable("%s\n%s; %s; %s\n%s; %s\n%s",
                 valueRepr("Name", name),
                 valueRepr("X", x), valueRepr("Y", y), valueRepr("Z", z),
                 valueRepr("Yaw", yaw), valueRepr("Pitch", pitch),

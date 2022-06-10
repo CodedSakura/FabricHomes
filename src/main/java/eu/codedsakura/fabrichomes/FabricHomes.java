@@ -11,7 +11,7 @@ import eu.codedsakura.mods.TeleportUtils;
 import eu.codedsakura.mods.TextUtils;
 import eu.codedsakura.mods.fpapiutils.FPAPIUtilsWrapper;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
@@ -53,7 +53,7 @@ public class FabricHomes implements ModInitializer {
                         new ConfigUtils.Command("Max available homes is %s", "Max homes set to %s"))
         }));
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+        CommandRegistrationCallback.EVENT.register((dispatcher, registry, environment) -> {
             dispatcher.register(literal("home")
                     .requires(FPAPIUtilsWrapper.require("fabrichomes.home", true))
                     .executes(ctx -> homeInit(ctx, null))
@@ -94,7 +94,7 @@ public class FabricHomes implements ModInitializer {
         if (recentRequests.containsKey(tFrom.getUuid())) {
             long diff = Instant.now().getEpochSecond() - recentRequests.get(tFrom.getUuid());
             if (diff < (int) config.getValue("cooldown")) {
-                tFrom.sendMessage(new TranslatableText("You cannot make teleport home for %s more seconds!", String.valueOf((int) config.getValue("cooldown") - diff)).formatted(Formatting.RED), false);
+                tFrom.sendMessage(Text.translatable("You cannot make teleport home for %s more seconds!", String.valueOf((int) config.getValue("cooldown") - diff)).formatted(Formatting.RED), false);
                 return true;
             }
         }
@@ -120,7 +120,7 @@ public class FabricHomes implements ModInitializer {
                 .stream().filter(v -> v.getName().equals(finalName)).findFirst();
 
         if (home.isEmpty()) {
-            ctx.getSource().sendFeedback(new LiteralText("This home does not exist").formatted(Formatting.RED), false);
+            ctx.getSource().sendFeedback(Text.literal("This home does not exist").formatted(Formatting.RED), false);
             return 0;
         }
 
@@ -141,7 +141,7 @@ public class FabricHomes implements ModInitializer {
         if (name == null) name = "main";
 
         if (HOME_DATA.get(ctx.getSource().getPlayer()).getHomes().size() >= (int) config.getValue("max-homes")) {
-            ctx.getSource().sendFeedback(new LiteralText("Home limit reached!").formatted(Formatting.RED), false);
+            ctx.getSource().sendFeedback(Text.literal("Home limit reached!").formatted(Formatting.RED), false);
             return 1;
         }
 
@@ -157,15 +157,15 @@ public class FabricHomes implements ModInitializer {
                     .stream().filter(v -> v.getName().equals(finalName)).findFirst();
 
             if (home.isEmpty()) {
-                ctx.getSource().sendFeedback(new LiteralText("Something went wrong adding the home!").formatted(Formatting.RED), true);
+                ctx.getSource().sendFeedback(Text.literal("Something went wrong adding the home!").formatted(Formatting.RED), true);
                 return 1;
             }
 
-            ctx.getSource().sendFeedback(new TranslatableText("Home %s added successfully!",
-                    new LiteralText(name).styled(s -> s.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, home.get().toText(ctx.getSource().getServer())))
+            ctx.getSource().sendFeedback(Text.translatable("Home %s added successfully!",
+                    Text.literal(name).styled(s -> s.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, home.get().toText(ctx.getSource().getServer())))
                             .withColor(Formatting.GOLD))).formatted(Formatting.LIGHT_PURPLE), false);
         } else {
-            ctx.getSource().sendFeedback(new LiteralText("Couldn't add the home (probably already exists)!").formatted(Formatting.RED), false);
+            ctx.getSource().sendFeedback(Text.literal("Couldn't add the home (probably already exists)!").formatted(Formatting.RED), false);
             return 1;
         }
         return 1;
@@ -177,14 +177,14 @@ public class FabricHomes implements ModInitializer {
                     .stream().filter(v -> v.getName().equals(name)).findFirst();
 
             if (home.isPresent()) {
-                ctx.getSource().sendFeedback(new LiteralText("Something went wrong removing the home!").formatted(Formatting.RED), true);
+                ctx.getSource().sendFeedback(Text.literal("Something went wrong removing the home!").formatted(Formatting.RED), true);
                 return 1;
             }
 
-            ctx.getSource().sendFeedback(new TranslatableText("Home %s deleted successfully!",
-                    new LiteralText(name).formatted(Formatting.GOLD)).formatted(Formatting.LIGHT_PURPLE), false);
+            ctx.getSource().sendFeedback(Text.translatable("Home %s deleted successfully!",
+                    Text.literal(name).formatted(Formatting.GOLD)).formatted(Formatting.LIGHT_PURPLE), false);
         } else {
-            ctx.getSource().sendFeedback(new LiteralText("Couldn't remove the home!").formatted(Formatting.RED), false);
+            ctx.getSource().sendFeedback(Text.literal("Couldn't remove the home!").formatted(Formatting.RED), false);
             return 1;
         }
         return 1;
@@ -201,13 +201,13 @@ public class FabricHomes implements ModInitializer {
         List<HomeComponent> homes = HOME_DATA.get(player).getHomes();
         List<Text> list = new ArrayList<>();
         homes.stream().sorted((h1, h2) -> h1.getName().compareToIgnoreCase(h2.getName())).forEach(h ->
-                list.add(new LiteralText(h.getName()).styled(s ->
+                list.add(Text.literal(h.getName()).styled(s ->
                         s.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/home " + h.getName()))
                                 .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                        LiteralText.EMPTY.copy().append(new LiteralText("Click to teleport.\n").formatted(Formatting.ITALIC))
+                                        Text.empty().append(Text.literal("Click to teleport.\n").formatted(Formatting.ITALIC))
                                                 .append(h.toText(ctx.getSource().getServer()))))
                                 .withColor(Formatting.GOLD))));
-        ctx.getSource().sendFeedback(new TranslatableText("%s/%s:\n", homes.size(), config.getValue("max-homes")).append(TextUtils.join(list, new LiteralText(", "))), false);
+        ctx.getSource().sendFeedback(Text.translatable("%s/%s:\n", homes.size(), config.getValue("max-homes")).append(TextUtils.join(list, Text.literal(", "))), false);
         return 1;
     }
 }

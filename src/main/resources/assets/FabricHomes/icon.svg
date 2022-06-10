@@ -35,7 +35,7 @@
         <rect x="-48" y="28" rx="12" width="96" height="32" fill="#EC407A"/>
     </g>
     <g text-anchor="middle" font-family="Uroob" filter="url(#neon)">
-        <text x="0" y="54" fill="#ffffffdd" font-size="32">HOME</text>
+        <text x="0" y="54" fill="#ffffffdd" font-size="32">HOMES</text>
         <text x="0" y="74" fill="#EC407A" font-size="16">FABRIC</text>
     </g>
 </svg>
